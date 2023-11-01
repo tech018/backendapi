@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int      @id @default(autoincrement())
+  email           String   @unique
+  name            String?
+  password        String
+  role            Role     @default(USER)
+  isEmailVerified Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  Otp             Otp[]
+  Token           Token[]
+}
+
+model Token {
+  id          Int       @id @default(autoincrement())
+  token       String
+  type        TokenType
+  expires     DateTime
+  blacklisted Boolean
+  createdAt   DateTime  @default(now())
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id])
+}
+
+model Otp {
+  id        Int      @id @default(autoincrement())
+  Otp       Int
+  email     String   @unique
+  expires   DateTime
+  createdAt DateTime @default(now())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum TokenType {
+  ACCESS
+  REFRESH
+  RESET_PASSWORD
+  VERIFY_EMAIL
+}

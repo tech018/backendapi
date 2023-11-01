@@ -1,0 +1,43 @@
+{
+  "name": "desktop",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx tsc",
+    "start": "node build/server/local.js",
+    "dev": "nodemon src/server/local.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^5.5.2",
+    "@types/bcrypt": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.3",
+    "@types/nodemailer": "^6.4.13",
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-joi-validation": "^5.0.1",
+    "googleapis": "^128.0.0",
+    "helmet": "^7.0.0",
+    "http-status": "^1.7.0",
+    "joi": "^17.11.0",
+    "jsonwebtoken": "^9.0.2",
+    "moment": "^2.29.4",
+    "morgan": "^1.10.0",
+    "nodemailer": "^6.9.7",
+    "nodemon": "^3.0.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.14",
+    "@types/express": "^4.17.19",
+    "@types/morgan": "^1.9.6",
+    "prisma": "^5.5.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.2.2"
+  }
+}
