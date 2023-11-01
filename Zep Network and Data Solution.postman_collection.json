@@ -1,0 +1,148 @@
+{
+	"info": {
+		"_postman_id": "daa36226-a765-4684-a173-817f0d0221ab",
+		"name": "Zep Network and Data Solution",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23029850"
+	},
+	"item": [
+		{
+			"name": "Register User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"zepnds@gmail.com\",\r\n    \"password\": \"budgetmeal@018\",\r\n    \"name\": \"Joseph De Guzman Aguilar\",\r\n    \"role\": \"USER\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"sojda018@gmail.com\",\r\n    \"password\": \"budgetmeal@018\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:5000/api/auth/activate?email=sojda018@gmail.com",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"auth",
+						"activate"
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "sojda018@gmail.com"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Activate User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:5000/api/auth/activate?email=sojda018@gmail.com&otp=701819",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"auth",
+						"activate"
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "sojda018@gmail.com"
+						},
+						{
+							"key": "otp",
+							"value": "701819"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Forgot Password",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:5000/api/auth/forgot?email=zepnds@gmail.com",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"auth",
+						"forgot"
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "zepnds@gmail.com"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
