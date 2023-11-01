@@ -115,7 +115,7 @@ const forgotPassword = async (email: string) => {
       return {
         response: `We send your otp in your email ${email}`,
         status: httpStatus.OK,
-        expiration: moment(otp.expires).format("lll"),
+        expiration: moment(otp.expires).utc(),
       };
     }
   } catch (error) {
