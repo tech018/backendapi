@@ -17,7 +17,7 @@ const activateUserSchema = Joi.object({
 const resetPasswordSchema = Joi.object({
   newPassword: Joi.string().required().min(6),
   email: Joi.string().email().required(),
-  otp: Joi.string().required(),
+  otp: Joi.number().required(),
 });
 
 export default {

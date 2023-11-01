@@ -23,7 +23,7 @@ export interface activateUserSchema extends ValidatedRequestSchema {
 export interface resetPasswordSchema extends ValidatedRequestSchema {
   [ContainerTypes.Body]: {
     email: string;
-    otp: string;
+    otp: number;
     newPassword: string;
   };
 }

@@ -23,4 +23,11 @@ router
     authModule.activateUser
   );
 
+router
+  .route("/changepassword")
+  .post(
+    validator.body(requestValidation.resetPasswordSchema),
+    authModule.changePassword
+  );
+
 export default router;

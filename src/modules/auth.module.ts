@@ -3,6 +3,7 @@ import {
   activateUserSchema,
   forgotPasswordSchema,
   loginUserRequestSchema,
+  resetPasswordSchema,
 } from "../schema/auth/auth.interface.request";
 import authService from "../service/auth.service";
 import { Response } from "express";
@@ -46,6 +47,22 @@ const forgotPassword = async (
   }
 };
 
+const changePassword = async (
+  req: ValidatedRequest<resetPasswordSchema>,
+  res: Response
+) => {
+  try {
+    const { newPassword, otp, email } = req.body;
+
+    const data = await authService.changePassword(otp, email, newPassword);
+    if (data) return res.status(data.status).json({ message: data.response });
+  } catch (error) {
+    return res
+      .status(httpStatus.INTERNAL_SERVER_ERROR)
+      .json({ message: error });
+  }
+};
+
 const activateUser = async (
   req: ValidatedRequest<activateUserSchema>,
   res: Response
@@ -69,4 +86,5 @@ export default {
   loginUser,
   forgotPassword,
   activateUser,
+  changePassword,
 };

@@ -1,6 +1,6 @@
 import httpStatus from "http-status";
 import userService from "./user.service";
-import { isPasswordMatch } from "../utils/encription";
+import { encryptPassword, isPasswordMatch } from "../utils/encription";
 import generator from "../utils/generator";
 import mailer from "../utils/mailer";
 import prisma from "../config/client";
@@ -193,9 +193,56 @@ const activateUser = async (email: string, otpRequest: number) => {
   }
 };
 
+const changePassword = async (
+  otpRequest: number,
+  email: string,
+  newpassword: string
+) => {
+  try {
+    const otp = await existOtp(email);
+
+    if (otpRequest !== otp?.Otp)
+      return {
+        status: httpStatus.BAD_REQUEST,
+        response: "OTP not match or invalid",
+      };
+
+    if (otp && moment(generator.currentDate).isAfter(moment(otp?.expires)))
+      return {
+        status: httpStatus.BAD_REQUEST,
+        response: "OTP is expired",
+      };
+
+    const successUpdate = await prisma.user.update({
+      where: {
+        email,
+      },
+      data: {
+        password: await encryptPassword(newpassword),
+      },
+    });
+    if (successUpdate)
+      return {
+        status: httpStatus.OK,
+        response: "Password has been change",
+      };
+
+    return {
+      status: httpStatus.BAD_REQUEST,
+      response: "There is something wrong in our end",
+    };
+  } catch (error) {
+    return {
+      status: httpStatus.BAD_REQUEST,
+      response: "There is something wrong in our end",
+    };
+  }
+};
+
 export default {
   loginUser,
   forgotPassword,
   existOtp,
   activateUser,
+  changePassword,
 };
