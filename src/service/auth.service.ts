@@ -41,14 +41,6 @@ const loginUser = async ({
       };
     }
 
-    const otp = await existOtp(email);
-
-    if (otp && moment(generator.currentDate).isAfter(moment(otp?.expires)))
-      return {
-        status: httpStatus.BAD_REQUEST,
-        response: "OTP is expired",
-      };
-
     if (!user || !user.isEmailVerified)
       return {
         status: httpStatus.BAD_REQUEST,
