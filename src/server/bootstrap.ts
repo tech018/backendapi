@@ -7,9 +7,11 @@ import config from "../config";
 
 import userRoutes from "../routes/user.routes";
 import authRoutes from "../routes/auth.routes";
+import uploadRoutes from "../routes/uploader.routes";
 
 const bootstrap = (application: express.Application): void => {
   application.disable("x-powered-by");
+  application.use(express.static(__dirname + "/files"));
   application.use(cors());
   application.use(cors({ optionsSuccessStatus: 200 }));
   application.use(parser.urlencoded({ extended: true }));
@@ -18,6 +20,8 @@ const bootstrap = (application: express.Application): void => {
   application.use(morgan(config.env === "development" ? "dev" : config.env));
   application.use("/api/user", userRoutes);
   application.use("/api/auth", authRoutes);
+  application.use("/files", express.static("files"));
+  application.use("/api/upload", uploadRoutes);
 };
 
 export default bootstrap;

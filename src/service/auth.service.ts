@@ -5,6 +5,7 @@ import generator from "../utils/generator";
 import mailer from "../utils/mailer";
 import prisma from "../config/client";
 import moment from "moment";
+import tokenService from "./token.service";
 
 const existOtp = async (email: string) => {
   const query = await prisma.otp.findUnique({
@@ -47,13 +48,16 @@ const loginUser = async ({
         response: "User not yet verified",
       };
 
-    if (user)
+    const generatedToken = await tokenService.generateAuthTokens(user);
+
+    if (generatedToken)
       return {
         response: {
           email: user.email,
           name: user.name,
           id: user.id,
           role: user.role,
+          tokens: generatedToken,
         },
         status: httpStatus.OK,
       };

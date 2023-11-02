@@ -16,10 +16,11 @@ const loginUser = async (
   try {
     const { password, email } = req.body;
     const data = await authService.loginUser({ email, password });
+
     if (data?.status === 401 || data?.status === 400)
       return res
         .status(httpStatus.UNAUTHORIZED)
-        .json({ message: data.response, status: data.status });
+        .json({ user: data.response, status: data.status });
 
     return res
       .status(httpStatus.OK)

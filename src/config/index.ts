@@ -14,6 +14,11 @@ const envVarsSchema = Joi.object()
     GOOGLE_REDIRECT_URI: Joi.string().required(),
     GOOGLE_MAILER_SERVICE: Joi.string().required(),
     GOOGLE_MAILER_TYPE: Joi.string().required(),
+    JWT_SECRET: Joi.string().required(),
+    JWT_ACCESS_EXPIRATION_MINUTES: Joi.number().required(),
+    JWT_REFRESH_EXPIRATION_DAYS: Joi.number().required(),
+    JWT_RESET_PASSWORD_EXPIRATION_MINUTES: Joi.number().required(),
+    JWT_VERIFY_EMAIL_EXPIRATION_MINUTES: Joi.number().required(),
   })
   .unknown();
 
@@ -35,4 +40,11 @@ export default {
   mailerUri: envVars.GOOGLE_REDIRECT_URI,
   mailerService: envVars.GOOGLE_MAILER_SERVICE,
   mailerType: envVars.GOOGLE_MAILER_TYPE,
+  jwt: {
+    secret: envVars.JWT_SECRET,
+    expirationMinutes: envVars.JWT_ACCESS_EXPIRATION_MINUTES,
+    expirationDays: envVars.JWT_REFRESH_EXPIRATION_DAYS,
+    expirationPassMinutes: envVars.JWT_RESET_PASSWORD_EXPIRATION_MINUTES,
+    expirationEmailMinutes: envVars.JWT_VERIFY_EMAIL_EXPIRATION_MINUTES,
+  },
 };
