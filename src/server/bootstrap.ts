@@ -8,6 +8,7 @@ import config from "../config";
 import userRoutes from "../routes/user.routes";
 import authRoutes from "../routes/auth.routes";
 import uploadRoutes from "../routes/uploader.routes";
+import clientRoutes from "../routes/client.routes";
 
 const bootstrap = (application: express.Application): void => {
   application.disable("x-powered-by");
@@ -22,6 +23,7 @@ const bootstrap = (application: express.Application): void => {
   application.use("/api/auth", authRoutes);
   application.use("/files", express.static("files"));
   application.use("/api/upload", uploadRoutes);
+  application.use("/api/client", clientRoutes);
 };
 
 export default bootstrap;

@@ -109,15 +109,6 @@ const getUserByEmail = async (email: string): Promise<boolean> => {
   return false;
 };
 
-const getUser = async (email: string): Promise<User | undefined> => {
-  const query = await prisma.user.findUnique({
-    where: {
-      email,
-    },
-  });
-  if (query) return query;
-};
-
 const checkEmail = async (email: string): Promise<User | null> => {
   const query = await prisma.user.findUnique({
     where: {
@@ -136,5 +127,4 @@ export default {
   getUserById,
   getUserByEmail,
   checkEmail,
-  getUser,
 };

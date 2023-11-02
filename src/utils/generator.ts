@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment, { Moment } from "moment";
 
 const randomNumber = (length: number): number => {
   return Math.floor(
@@ -13,7 +13,7 @@ const expiration = (): string => {
   return expires;
 };
 
-const currentDate = moment(new Date()).utc();
+const currentDate: Moment = moment(new Date()).utc();
 
 export default {
   randomNumber,
