@@ -1,7 +1,8 @@
 import { Client } from "@prisma/client";
 import prisma from "../config/client";
-import { IClient } from "../types/client";
+import { ClientID, IClient } from "../types/client";
 import httpStatus from "http-status";
+import mailer from "../utils/mailer";
 
 const createClient = async ({
   name,
@@ -99,9 +100,70 @@ const updateClient = async (
   }
 };
 
+const deleteClient = async (clientId: number) => {
+  try {
+    const client = await prisma.client.findUnique({
+      where: {
+        id: clientId,
+      },
+    });
+
+    if (client) {
+      const deleted = await prisma.client.delete({
+        where: {
+          id: clientId,
+        },
+      });
+      if (deleted)
+        return {
+          response: `Successfully deleted ${client.name}`,
+          status: httpStatus.OK,
+        };
+      return {
+        response: `Cannot delete ${client.name}`,
+        status: httpStatus.BAD_REQUEST,
+      };
+    } else {
+      return {
+        response: `client not found`,
+        status: httpStatus.NOT_FOUND,
+      };
+    }
+  } catch (error) {
+    return {
+      response: `Internal server error`,
+      status: httpStatus.INTERNAL_SERVER_ERROR,
+    };
+  }
+};
+
+const allClients = async () => {
+  try {
+    const clients = await prisma.client.findMany();
+    if (clients.length > 0) {
+      return {
+        response: clients,
+        status: httpStatus.OK,
+      };
+    } else {
+      return {
+        response: "Records empty",
+        status: httpStatus.NO_CONTENT,
+      };
+    }
+  } catch (error) {
+    return {
+      response: `Internal server error ${error}`,
+      status: httpStatus.INTERNAL_SERVER_ERROR,
+    };
+  }
+};
+
 export default {
   checkClientEmail,
   createClient,
   updateClient,
   checkClientId,
+  deleteClient,
+  allClients,
 };

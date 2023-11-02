@@ -5,6 +5,8 @@ import clientsModule from "../modules/clients.module";
 const validator = createValidator();
 const router = express.Router();
 
+router.route("/getall").get(clientsModule.allClients);
+
 router
   .route("/create")
   .post(
@@ -17,6 +19,13 @@ router
   .put(
     validator.body(clientValidation.clientUpdateSchema),
     clientsModule.updateClient
+  );
+
+router
+  .route("/delete")
+  .delete(
+    validator.query(clientValidation.clientDeleteSchema),
+    clientsModule.deleteClient
   );
 
 export default router;

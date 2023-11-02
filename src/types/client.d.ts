@@ -5,3 +5,7 @@ export interface IClient {
   contact_number: string;
   logo: string;
 }
+
+export interface ClientID {
+  id: number;
+}

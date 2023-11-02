@@ -18,3 +18,9 @@ export interface updateClientRequestSchema extends ValidatedRequestSchema {
     value: string;
   };
 }
+
+export interface deleteClientRequestSchema extends ValidatedRequestSchema {
+  [ContainerTypes.Query]: {
+    clientId: number;
+  };
+}

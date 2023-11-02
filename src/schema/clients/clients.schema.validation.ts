@@ -14,7 +14,12 @@ const clientUpdateSchema = Joi.object({
   clientId: Joi.number().required(),
 });
 
+const clientDeleteSchema = Joi.object({
+  clientId: Joi.number().required(),
+});
+
 export default {
   clientSchema,
   clientUpdateSchema,
+  clientDeleteSchema,
 };
