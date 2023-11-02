@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -41,9 +41,58 @@ model Otp {
   user      User     @relation(fields: [userId], references: [id])
 }
 
+model Client {
+  id                Int       @id @default(autoincrement())
+  email             String    @unique
+  createdAt         DateTime  @default(now())
+  name              String
+  address           String
+  contact_number    String
+  ticket            Ticket[]
+  logo              String
+}
+
+model Ticket {
+  id                Int         @id @default(autoincrement())
+  client            Client      @relation(fields: [clientId], references: [id])
+  createdAt         DateTime    @default(now())
+  description       String
+  project           Project     @default(WEBSITE)
+  comments          Comments[]
+  assignee          String
+  clientId          Int
+  assignee_email    String      @unique
+  reporter          String
+  reporter_email    String      @unique
+}
+
+model Attachments {
+  id                Int         @id @default(autoincrement())
+  type              String
+  parentId          Int
+  details           String
+}
+
+model Comments {
+  id                Int         @id @default(autoincrement())
+  comment           String
+  commentator       String
+  commentator_email String
+  avatar            String 
+  ticket            Ticket      @relation(fields: [ticketId], references: [id])
+  ticketId          Int
+}
+
 enum Role {
   USER
   ADMIN
+}
+
+enum Project {
+  WEBSITE
+  WEB_APPLICATION
+  MOBILE_APPLICATION
+  TECHNOLOGY_ELEMENTS
 }
 
 enum TokenType {
