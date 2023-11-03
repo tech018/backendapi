@@ -17,7 +17,7 @@ const bootstrap = (application: express.Application): void => {
   application.use(cors({ optionsSuccessStatus: 200 }));
   application.use(parser.urlencoded({ extended: true }));
   application.use(parser.json());
-  application.use(helmet());
+  application.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
   application.use(morgan(config.env === "development" ? "dev" : config.env));
   application.use("/api/user", userRoutes);
   application.use("/api/auth", authRoutes);
