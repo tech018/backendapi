@@ -12,9 +12,9 @@ import clientRoutes from "../routes/client.routes";
 
 const bootstrap = (application: express.Application): void => {
   application.disable("x-powered-by");
-  application.use(express.static(__dirname + "/files"));
   application.use(cors());
   application.use(cors({ optionsSuccessStatus: 200 }));
+  application.use(express.static(__dirname + "/files"));
   application.use(parser.urlencoded({ extended: true }));
   application.use(parser.json());
   application.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
