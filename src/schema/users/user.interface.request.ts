@@ -5,7 +5,7 @@ export interface createUserRequestSchema extends ValidatedRequestSchema {
   [ContainerTypes.Body]: {
     password: string;
     email: string;
-    name?: string;
+    name: string;
     role: Role;
   };
 }

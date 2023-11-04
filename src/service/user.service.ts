@@ -10,7 +10,7 @@ import moment from "moment";
 const createUser = async (
   email: string,
   password: string,
-  name?: string,
+  name: string,
   role: Role = Role.USER
 ) => {
   const checkEmail = await getUserByEmail(email);
@@ -26,15 +26,22 @@ const createUser = async (
       role,
     },
   });
-
+  const emailTitle = "Verify Email";
+  const message =
+    "To complete your registration your need to follow this button to activate your account";
   const generatedNumber = generator.randomNumber(6);
   const mailOptions = {
     from: '"Zep Network and Data Solution" <zepnds@gmail.com>',
     to: email,
     subject: "Verification Code",
     text: "Greetings from Zep Network and Data Solution",
-    html: `<span>here is your OTP <h3>${generatedNumber}</h3></span>
-        `,
+    html: mailer.generateHtmlEmail(
+      emailTitle,
+      email,
+      name,
+      message,
+      generatedNumber
+    ),
   };
 
   const checkotp = await authService.existOtp(email);

@@ -19,6 +19,7 @@ const envVarsSchema = Joi.object()
     JWT_REFRESH_EXPIRATION_DAYS: Joi.number().required(),
     JWT_RESET_PASSWORD_EXPIRATION_MINUTES: Joi.number().required(),
     JWT_VERIFY_EMAIL_EXPIRATION_MINUTES: Joi.number().required(),
+    FRONTEND_URL: Joi.string().required(),
   })
   .unknown();
 
@@ -33,6 +34,7 @@ if (error) {
 export default {
   env: envVars.NODE_ENV,
   port: envVars.PORT,
+  frontendURL: envVars.FRONTEND_URL,
   mailer: envVars.GOOGLE_SENDER_EMAIL,
   mailerSecret: envVars.GOOGLE_CLIENT_SECRET,
   mailerID: envVars.GOOGLE_CLIENT_ID,
