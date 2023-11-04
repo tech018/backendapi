@@ -20,7 +20,7 @@ const loginUser = async (
     if (data?.status === 401 || data?.status === 400)
       return res
         .status(httpStatus.UNAUTHORIZED)
-        .json({ user: data.response, status: data.status });
+        .json({ message: data.response, status: data.status });
 
     return res
       .status(httpStatus.OK)

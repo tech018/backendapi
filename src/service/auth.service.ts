@@ -53,10 +53,12 @@ const loginUser = async ({
     if (generatedToken)
       return {
         response: {
-          email: user.email,
-          name: user.name,
-          id: user.id,
-          role: user.role,
+          user: {
+            email: user.email,
+            name: user.name,
+            id: user.id,
+            role: user.role,
+          },
           tokens: generatedToken,
         },
         status: httpStatus.OK,
