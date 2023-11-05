@@ -65,6 +65,8 @@ model Ticket {
   assignee_email    String      @unique
   reporter          String
   reporter_email    String      @unique
+  ticket_type       String
+  ticket_severity   String
 }
 
 model Attachments {
@@ -95,6 +97,7 @@ enum Project {
   MOBILE_APPLICATION
   TECHNOLOGY_ELEMENTS
 }
+
 
 enum TokenType {
   ACCESS

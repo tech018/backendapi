@@ -1,1 +1,4 @@
-interface Ticket {}
+interface Ticket {
+  description: string;
+  title: string;
+}
