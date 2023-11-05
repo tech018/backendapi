@@ -57,6 +57,7 @@ model Ticket {
   client            Client      @relation(fields: [clientId], references: [id])
   createdAt         DateTime    @default(now())
   description       String
+  title             String
   project           Project     @default(WEBSITE)
   comments          Comments[]
   assignee          String
