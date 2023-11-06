@@ -147,8 +147,8 @@ const allClients = async () => {
       };
     } else {
       return {
-        response: "Records empty",
-        status: httpStatus.NO_CONTENT,
+        response: [],
+        status: httpStatus.OK,
       };
     }
   } catch (error) {
