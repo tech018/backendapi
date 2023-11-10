@@ -26,8 +26,15 @@ const updateClient = async (
   req: ValidatedRequest<updateClientRequestSchema>,
   res: Response
 ) => {
-  const { key, clientId, value } = req.body;
-  const update = await clientsService.updateClient(clientId, key, value);
+  const { clientId, name, email, address, contact_number, logo } = req.body;
+  const update = await clientsService.updateClient(
+    clientId,
+    name,
+    email,
+    address,
+    contact_number,
+    logo
+  );
   if (update) return res.status(update.status).json({ data: update.response });
 };
 

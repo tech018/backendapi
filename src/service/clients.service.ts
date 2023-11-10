@@ -64,8 +64,49 @@ const checkClientId = async (clientId: number): Promise<Client | null> => {
 
   return null;
 };
-
 const updateClient = async (
+  clientId: number,
+  name: string,
+  email: string,
+  address: string,
+  contact_number: string,
+  logo: string
+) => {
+  try {
+    const checkclientid = await checkClientId(clientId);
+    if (checkclientid === null)
+      return {
+        response: `Cannot find client id`,
+        status: httpStatus.NOT_FOUND,
+      };
+    const client = await prisma.client.update({
+      where: { id: clientId },
+      data: {
+        name,
+        email,
+        address,
+        contact_number,
+        logo,
+      },
+    });
+    if (client)
+      return {
+        status: httpStatus.OK,
+        response: `Successfully update ${name}`,
+      };
+    return {
+      status: httpStatus.BAD_REQUEST,
+      response: `There is a something wrong in our end`,
+    };
+  } catch (error) {
+    return {
+      status: httpStatus.INTERNAL_SERVER_ERROR,
+      response: `Error updating client", ${error}`,
+    };
+  }
+};
+
+const updateClientSingle = async (
   clientId: number,
   key: keyof Client,
   value: string
@@ -162,6 +203,7 @@ const allClients = async () => {
 export default {
   checkClientEmail,
   createClient,
+  updateClientSingle,
   updateClient,
   checkClientId,
   deleteClient,

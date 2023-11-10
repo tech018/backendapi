@@ -14,6 +14,18 @@ export interface createClientRequestSchema extends ValidatedRequestSchema {
 export interface updateClientRequestSchema extends ValidatedRequestSchema {
   [ContainerTypes.Body]: {
     clientId: number;
+    name: string;
+    email: string;
+    address: string;
+    contact_number: string;
+    logo: string;
+  };
+}
+
+export interface updateSingleClientRequestSchema
+  extends ValidatedRequestSchema {
+  [ContainerTypes.Body]: {
+    clientId: number;
     key: keyof Client;
     value: string;
   };
