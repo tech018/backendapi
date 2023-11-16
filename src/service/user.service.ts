@@ -1,86 +1,66 @@
-import { User, Role } from "@prisma/client";
-import prisma from "../config/client";
 import { encryptPassword } from "../utils/encription";
 import generator from "../utils/generator";
 import mailer from "../utils/mailer";
 import httpStatus from "http-status";
 import authService from "./auth.service";
 import moment from "moment";
+import { Users } from "../models/user.model";
 
 const createUser = async (
   email: string,
   password: string,
   name: string,
-  role: Role = Role.USER
+  role: string
 ) => {
   const checkEmail = await getUserByEmail(email);
   if (checkEmail) {
     return undefined;
   }
 
-  const user = await prisma.user.create({
-    data: {
-      email,
-      name,
-      password: await encryptPassword(password),
-      role,
-    },
+  const newuser = new Users({
+    email,
+    password: encryptPassword(password),
+    role: "user",
+    otp: generator.randomNumber(10),
+    verified: false,
   });
-  const emailTitle = "Verify Email";
-  const message =
-    "To complete your registration your need to follow this button to activate your account";
-  const generatedNumber = generator.randomNumber(6);
-  const mailOptions = {
-    from: '"Zep Network and Data Solution" <zepnds@gmail.com>',
-    to: email,
-    subject: "Verification Code",
-    text: "Greetings from Zep Network and Data Solution",
-    html: mailer.generateHtmlEmail(
-      emailTitle,
-      email,
-      name,
-      message,
-      generatedNumber
-    ),
-  };
 
-  const checkotp = await authService.existOtp(email);
-  if (checkotp?.email) {
-    const otp = await prisma.otp.update({
-      where: {
+  const user = await newuser.save();
+
+  if (user) {
+    const emailTitle = "Verify Email";
+    const message =
+      "To complete your registration your need to follow this button to activate your account";
+    const generatedNumber = generator.randomNumber(6);
+    const mailOptions = {
+      from: '"Zep Network and Data Solution" <zepnds@gmail.com>',
+      to: email,
+      subject: "Verification Code",
+      text: "Greetings from Zep Network and Data Solution",
+      html: mailer.generateHtmlEmail(
+        emailTitle,
         email,
-      },
-      data: {
-        Otp: generatedNumber,
-        expires: generator.expiration(),
-      },
-    });
-    if (otp) await mailer.sendEmail(mailOptions);
+        name,
+        message,
+        generatedNumber
+      ),
+    };
+
+    await mailer.sendEmail(mailOptions);
     return {
       response: `Successfully registered, We send your otp in your email ${email} to verify your email`,
       status: httpStatus.OK,
-      expiration: moment(otp.expires).format("lll"),
     };
   } else {
-    const otp = await prisma.otp.create({
-      data: {
-        email,
-        Otp: generatedNumber,
-        expires: generator.expiration(),
-        userId: user.id,
-      },
-    });
-    if (otp) await mailer.sendEmail(mailOptions);
     return {
-      response: `Successfully registered, We send your otp in your email ${email} to verify your email`,
-      status: httpStatus.OK,
-      expiration: moment(otp.expires).format("lll"),
+      response: "Something wrong in our user registration",
+      status: httpStatus.BAD_REQUEST,
     };
   }
 };
 
 const queryUsers = async () => {
-  const users = await prisma.user.findMany();
+  const users = await Users.find();
   return users;
 };
 
