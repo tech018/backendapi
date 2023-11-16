@@ -20,6 +20,7 @@ const envVarsSchema = Joi.object()
     JWT_RESET_PASSWORD_EXPIRATION_MINUTES: Joi.number().required(),
     JWT_VERIFY_EMAIL_EXPIRATION_MINUTES: Joi.number().required(),
     FRONTEND_URL: Joi.string().required(),
+    MONGO_URI: Joi.string().required(),
   })
   .unknown();
 
@@ -42,6 +43,7 @@ export default {
   mailerUri: envVars.GOOGLE_REDIRECT_URI,
   mailerService: envVars.GOOGLE_MAILER_SERVICE,
   mailerType: envVars.GOOGLE_MAILER_TYPE,
+  mongouri: envVars.MONGO_URI,
   jwt: {
     secret: envVars.JWT_SECRET,
     expirationMinutes: envVars.JWT_ACCESS_EXPIRATION_MINUTES,
