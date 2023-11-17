@@ -3,7 +3,6 @@ import { Schema, model } from "mongoose";
 export interface IUsers {
   email: string;
   password: string;
-  otp: number;
   role: string;
   verified: boolean;
   name: string;
@@ -21,10 +20,6 @@ const userSchema = new Schema<IUsers>({
   },
   password: {
     type: String,
-    required: true,
-  },
-  otp: {
-    type: Number,
     required: true,
   },
   role: {

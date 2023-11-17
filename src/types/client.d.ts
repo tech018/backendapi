@@ -1,3 +1,5 @@
+import { Types } from "mongoose";
+
 export interface IClient {
   email: string;
   name: string;
@@ -13,7 +15,7 @@ export interface ClientID {
 export interface IUser {
   email: string
   name: string
-  mobile: string
   role: string
+  id: Types.ObjectId
 }
 export type status = Number | String

@@ -1,11 +1,18 @@
 import httpStatus from "http-status";
 import userService from "./user.service";
-import { encryptPassword, isPasswordMatch } from "../utils/encription";
+import { encryptPassword, isPasswordMatch, generateToken } from "../utils/encription";
 import generator from "../utils/generator";
 import mailer from "../utils/mailer";
 import moment from "moment";
+import { Otp } from "../models/otp.model";
+import { Users } from "../models/user.model";
 
 
+const checkOtp = async (email: string)=> {
+  const otp = await Otp.findOne({email})
+  if(otp) return otp
+  return null
+}
 
 const loginUser = async ({
   email,
@@ -36,22 +43,23 @@ const loginUser = async ({
         response: "User not yet verified",
       };
 
-    
+   const data = {
+    email: user.response.email,
+    role: user.response.role,
+    id: user.response.id,
+    name: user.response.name
+   }
 
-    if (generatedToken)
-      return {
-        response: {
-          user: {
-            email: user.email,
-            name: user.name,
-            id: user.id,
-            role: user.role,
-          },
-          tokens: generatedToken,
-        },
-        status: httpStatus.OK,
-      };
+
+    return {
+      status: httpStatus.OK,
+      response: {
+        token: generateToken(data),
+        data,
+      }
+    }
   } catch (error) {
+    console.log("error", error)
     return {
       response: error,
       status: httpStatus.INTERNAL_SERVER_ERROR,
@@ -60,9 +68,11 @@ const loginUser = async ({
 };
 
 const forgotPassword = async (email: string) => {
-  const user = await userService.checkEmail(email);
 
-  if (!user?.email)
+  
+  const user = await userService.getUserByEmail(email);
+
+  if (!user?.response.email)
     return {
       response: "Email not registered!",
       status: httpStatus.NOT_FOUND,
@@ -79,39 +89,42 @@ const forgotPassword = async (email: string) => {
         `,
     };
 
-    const checkotp = await existOtp(email);
-    if (checkotp?.email) {
-      const otp = await prisma.otp.update({
-        where: {
-          email,
-        },
-        data: {
-          Otp: generatedNumber,
-          expires: generator.expiration(),
-        },
-      });
-      if (otp) await mailer.sendEmail(mailOptions);
+    await mailer.sendEmail(mailOptions);
+    const otp = await checkOtp(email)
+    if(otp?.otp) {
+      const filter = {email}
+      const update = {otp: generatedNumber}
+      const updateOtp = await Otp.findOneAndUpdate(filter, update)
+      if(updateOtp){
+        return {
+          status: httpStatus.OK,
+          response: `We send an otp in your email ${email}`
+        }
+      }
+
       return {
-        response: `We send your otp in your email ${email}`,
-        status: httpStatus.OK,
-        expiration: moment(otp.expires).format("lll"),
-      };
-    } else {
-      const otp = await prisma.otp.create({
-        data: {
-          email,
-          Otp: generatedNumber,
-          expires: generator.expiration(),
-          userId: user.id,
-        },
-      });
-      if (otp) await mailer.sendEmail(mailOptions);
+        status: httpStatus.BAD_REQUEST,
+        response: 'Something wrong in our end'
+      }
+    }else{
+      const createotp = await Otp.create({
+        otp: generatedNumber,
+        expiration: generator.expiration(),
+        email,
+      })
+      if(createotp){
+        return {
+          status: httpStatus.OK,
+          response: `We send an otp in your email ${email}`
+        }
+      }
       return {
-        response: `We send your otp in your email ${email}`,
-        status: httpStatus.OK,
-        expiration: moment(otp.expires).utc(),
-      };
+        status: httpStatus.BAD_REQUEST,
+        response: 'Something wrong in our end'
+      }
     }
+
+   
   } catch (error) {
     return {
       response: "Email transfer failed",
@@ -120,43 +133,34 @@ const forgotPassword = async (email: string) => {
   }
 };
 
+
+
 const activateUser = async (email: string, otpRequest: number) => {
   try {
-    const otp = await existOtp(email);
-    const user = await userService.checkEmail(email);
+    const otp = await checkOtp(email);
+    const user = await userService.getUserByEmail(email);
 
-    if (!otp?.Otp && user?.isEmailVerified)
+    if (!otp?.otp && user?.response.verified)
       return {
         status: httpStatus.OK,
         response: `Your account is already activated`,
       };
-    if (otpRequest !== otp?.Otp)
+    if (otpRequest !== otp?.otp)
       return {
         status: httpStatus.BAD_REQUEST,
         response: "OTP not match or invalid",
       };
 
-    if (otp && moment(generator.currentDate).isAfter(moment(otp?.expires)))
+    if (otp && moment(generator.currentDate).isAfter(moment(otp?.expiration)))
       return {
         status: httpStatus.BAD_REQUEST,
         response: "OTP is expired",
       };
 
-    const successUpdate = await prisma.user.update({
-      where: {
-        email,
-      },
-      data: {
-        isEmailVerified: true,
-      },
-    });
+    const successUpdate = await Users.findOneAndUpdate({email}, {verified: true});
 
     if (successUpdate) {
-      const deleteOtp = await prisma.otp.delete({
-        where: {
-          email,
-        },
-      });
+      const deleteOtp = await Otp.deleteOne({email});
       if (deleteOtp)
         return {
           status: httpStatus.OK,
@@ -185,28 +189,24 @@ const changePassword = async (
   newpassword: string
 ) => {
   try {
-    const otp = await existOtp(email);
+    const otp = await checkOtp(email);
 
-    if (otpRequest !== otp?.Otp)
+    if (otpRequest !== otp?.otp)
       return {
         status: httpStatus.BAD_REQUEST,
         response: "OTP not match or invalid",
       };
 
-    if (otp && moment(generator.currentDate).isAfter(moment(otp?.expires)))
+    if (otp && moment(generator.currentDate).isAfter(moment(otp?.expiration)))
       return {
         status: httpStatus.BAD_REQUEST,
         response: "OTP is expired",
       };
 
-    const successUpdate = await prisma.user.update({
-      where: {
-        email,
-      },
-      data: {
+    const successUpdate = await Users.findOneAndUpdate({email},{
         password: await encryptPassword(newpassword),
       },
-    });
+    );
     if (successUpdate)
       return {
         status: httpStatus.OK,
@@ -228,7 +228,7 @@ const changePassword = async (
 export default {
   loginUser,
   forgotPassword,
-  existOtp,
+  checkOtp,
   activateUser,
   changePassword,
 };

@@ -3,6 +3,23 @@ import generator from "../utils/generator";
 import mailer from "../utils/mailer";
 import httpStatus from "http-status";
 import { Users } from "../models/user.model";
+import { Otp } from "../models/otp.model";
+
+const getUserByEmail = async (email:string) => {
+  const user = await Users.findOne({email})
+  if(user) return {
+    status: httpStatus.OK,
+    response: {
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      password: user.password,
+      verified: user.verified,
+      id: user._id
+    }
+  }
+  return null
+};
 
 
 const createUser = async (
@@ -25,7 +42,6 @@ const createUser = async (
     password:await encryptPassword(password),
     role,
     name,
-    otp: generator.randomNumber(6),
     verified: false,
   });
 
@@ -51,6 +67,9 @@ const createUser = async (
     };
 
     await mailer.sendEmail(mailOptions);
+
+    await Otp.create({email, otp: generatedNumber, expiration: generator.expiration()})
+
     return {
       response: `Successfully registered, We send your otp in your email ${email} to verify your email`,
       status: httpStatus.OK,
@@ -71,20 +90,6 @@ const queryUsers = async () => {
   return users;
 };
 
-const getUserByEmail = async (email:string) => {
-  const user = await Users.findOne({email})
-  if(user) return {
-    status: httpStatus.OK,
-    response: {
-      email: user.email,
-      name: user.name,
-      role: user.role,
-      password: user.password,
-      verified: user.verified
-    }
-  }
-  return null
-};
 
 const getUserById = async (id: string)=> {
   const user = await Users.findById(id)
