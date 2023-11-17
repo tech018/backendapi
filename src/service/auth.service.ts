@@ -55,7 +55,7 @@ const loginUser = async ({
       status: httpStatus.OK,
       response: {
         token: generateToken(data),
-        data,
+        user: data,
       }
     }
   } catch (error) {

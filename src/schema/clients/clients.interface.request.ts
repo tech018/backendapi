@@ -1,5 +1,5 @@
-import { Client } from "@prisma/client";
 import { ContainerTypes, ValidatedRequestSchema } from "express-joi-validation";
+import { IClient } from "../../types/client";
 
 export interface createClientRequestSchema extends ValidatedRequestSchema {
   [ContainerTypes.Body]: {
@@ -26,13 +26,13 @@ export interface updateSingleClientRequestSchema
   extends ValidatedRequestSchema {
   [ContainerTypes.Body]: {
     clientId: number;
-    key: keyof Client;
+    key: keyof IClient;
     value: string;
   };
 }
 
 export interface deleteClientRequestSchema extends ValidatedRequestSchema {
   [ContainerTypes.Query]: {
-    clientId: number;
+    clientId: string;
   };
 }

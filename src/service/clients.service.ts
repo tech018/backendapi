@@ -1,8 +1,6 @@
-import { Client } from "@prisma/client";
-import prisma from "../config/client";
-import { ClientID, IClient } from "../types/client";
 import httpStatus from "http-status";
-import mailer from "../utils/mailer";
+import { IClient } from "../types/client";
+import { Client } from "../models/client.model";
 
 const createClient = async ({
   name,
@@ -19,14 +17,12 @@ const createClient = async ({
         response: "client email is already exist",
       };
 
-    const create = await prisma.client.create({
-      data: {
-        name,
-        email,
-        address,
-        contact_number,
-        logo,
-      },
+    const create = await Client.create({
+      name,
+      email,
+      address,
+      contact_number,
+      logo,
     });
     if (create)
       return {
@@ -41,24 +37,16 @@ const createClient = async ({
   }
 };
 
-const checkClientEmail = async (email: string): Promise<Client | null> => {
-  const query = await prisma.client.findUnique({
-    where: {
-      email,
-    },
-  });
+const checkClientEmail = async (email: string): Promise<IClient | null> => {
+  const query = await Client.findOne({ email });
 
   if (query) return query;
 
   return null;
 };
 
-const checkClientId = async (clientId: number): Promise<Client | null> => {
-  const query = await prisma.client.findUnique({
-    where: {
-      id: clientId,
-    },
-  });
+const checkClientId = async (clientId: number): Promise<IClient | null> => {
+  const query = await Client.findById(clientId);
 
   if (query) return query;
 
@@ -79,16 +67,16 @@ const updateClient = async (
         response: `Cannot find client id`,
         status: httpStatus.NOT_FOUND,
       };
-    const client = await prisma.client.update({
-      where: { id: clientId },
-      data: {
+    const client = await Client.findOneAndUpdate(
+      { _id: clientId },
+      {
         name,
         email,
         address,
         contact_number,
         logo,
-      },
-    });
+      }
+    );
     if (client)
       return {
         status: httpStatus.OK,
@@ -108,7 +96,7 @@ const updateClient = async (
 
 const updateClientSingle = async (
   clientId: number,
-  key: keyof Client,
+  key: keyof IClient,
   value: string
 ) => {
   try {
@@ -118,12 +106,12 @@ const updateClientSingle = async (
         response: `Cannot find client id`,
         status: httpStatus.NOT_FOUND,
       };
-    const client = await prisma.client.update({
-      where: { id: clientId },
-      data: {
+    const client = await Client.findOneAndUpdate(
+      { id: clientId },
+      {
         [key]: value,
-      },
-    });
+      }
+    );
     if (client)
       return {
         status: httpStatus.OK,
@@ -141,20 +129,12 @@ const updateClientSingle = async (
   }
 };
 
-const deleteClient = async (clientId: number) => {
+const deleteClient = async (clientId: string) => {
   try {
-    const client = await prisma.client.findUnique({
-      where: {
-        id: clientId,
-      },
-    });
+    const client = await Client.findById(clientId);
 
     if (client) {
-      const deleted = await prisma.client.delete({
-        where: {
-          id: clientId,
-        },
-      });
+      const deleted = await Client.findByIdAndDelete(client._id);
       if (deleted)
         return {
           response: `Successfully deleted ${client.name}`,
@@ -180,7 +160,7 @@ const deleteClient = async (clientId: number) => {
 
 const allClients = async () => {
   try {
-    const clients = await prisma.client.findMany();
+    const clients = await Client.find();
     if (clients.length > 0) {
       return {
         response: clients,
