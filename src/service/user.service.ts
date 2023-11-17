@@ -2,9 +2,8 @@ import { encryptPassword } from "../utils/encription";
 import generator from "../utils/generator";
 import mailer from "../utils/mailer";
 import httpStatus from "http-status";
-import authService from "./auth.service";
-import moment from "moment";
 import { Users } from "../models/user.model";
+
 
 const createUser = async (
   email: string,
@@ -12,16 +11,21 @@ const createUser = async (
   name: string,
   role: string
 ) => {
-  const checkEmail = await getUserByEmail(email);
+  try {
+    const checkEmail = await getUserByEmail(email);
   if (checkEmail) {
-    return undefined;
+    return {
+      status: httpStatus.BAD_REQUEST,
+      response: `${email} is already registered`
+    };
   }
 
   const newuser = new Users({
     email,
-    password: encryptPassword(password),
-    role: "user",
-    otp: generator.randomNumber(10),
+    password:await encryptPassword(password),
+    role,
+    name,
+    otp: generator.randomNumber(6),
     verified: false,
   });
 
@@ -57,6 +61,9 @@ const createUser = async (
       status: httpStatus.BAD_REQUEST,
     };
   }
+  } catch (error) {
+    console.log("error", error)
+  }
 };
 
 const queryUsers = async () => {
@@ -64,54 +71,42 @@ const queryUsers = async () => {
   return users;
 };
 
-const getUserById = async <Key extends keyof User>(
-  id: number,
-  keys: Key[] = [
-    "id",
-    "email",
-    "name",
-    "password",
-    "role",
-    "isEmailVerified",
-    "createdAt",
-    "updatedAt",
-  ] as Key[]
-): Promise<Pick<User, Key> | null> => {
-  return prisma.user.findUnique({
-    where: { id },
-    select: keys.reduce((obj, k) => ({ ...obj, [k]: true }), {}),
-  }) as Promise<Pick<User, Key> | null>;
+const getUserByEmail = async (email:string) => {
+  const user = await Users.findOne({email})
+  if(user) return {
+    status: httpStatus.OK,
+    response: {
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      password: user.password,
+      verified: user.verified
+    }
+  }
+  return null
 };
 
-const getUserByEmail = async (email: string): Promise<boolean> => {
-  const query = await prisma.user.findUnique({
-    where: {
-      email,
-    },
-    select: {
-      email: true,
-    },
-  });
-  if (query?.email) return true;
-  return false;
-};
+const getUserById = async (id: string)=> {
+  const user = await Users.findById(id)
+  if(user) return {
+    status: httpStatus.OK,
+    response: {
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      id: user.id,
+    }
+  }
+  return null
+}
 
-const checkEmail = async (email: string): Promise<User | null> => {
-  const query = await prisma.user.findUnique({
-    where: {
-      email,
-    },
-  });
 
-  if (query) return query;
 
-  return null;
-};
+
 
 export default {
   createUser,
   queryUsers,
-  getUserById,
   getUserByEmail,
-  checkEmail,
+  getUserById,
 };

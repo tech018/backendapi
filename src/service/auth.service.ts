@@ -3,21 +3,9 @@ import userService from "./user.service";
 import { encryptPassword, isPasswordMatch } from "../utils/encription";
 import generator from "../utils/generator";
 import mailer from "../utils/mailer";
-import prisma from "../config/client";
 import moment from "moment";
-import tokenService from "./token.service";
 
-const existOtp = async (email: string) => {
-  const query = await prisma.otp.findUnique({
-    where: {
-      email,
-    },
-  });
 
-  if (query) return query;
-
-  return null;
-};
 
 const loginUser = async ({
   email,
@@ -27,28 +15,28 @@ const loginUser = async ({
   password: string;
 }) => {
   try {
-    const user = await userService.checkEmail(email);
+    const user = await userService.getUserByEmail(email);
 
-    if (!user?.email)
+    if (!user?.response?.email)
       return {
         response: "Invalid login credentials",
         status: httpStatus.UNAUTHORIZED,
       };
 
-    if (!user || !(await isPasswordMatch(password, user.password as string))) {
+    if (!user || !(await isPasswordMatch(password, user.response.password as string))) {
       return {
         status: httpStatus.UNAUTHORIZED,
         response: "Invalid login credentials",
       };
     }
 
-    if (!user || !user.isEmailVerified)
+    if (!user || !user.response.verified)
       return {
         status: httpStatus.BAD_REQUEST,
         response: "User not yet verified",
       };
 
-    const generatedToken = await tokenService.generateAuthTokens(user);
+    
 
     if (generatedToken)
       return {

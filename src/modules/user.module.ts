@@ -1,4 +1,4 @@
-import httpStatus, { NOT_FOUND } from "http-status";
+import httpStatus from "http-status";
 import { Request, Response } from "express";
 import userService from "../service/user.service";
 import { ValidatedRequest } from "express-joi-validation";
@@ -62,10 +62,10 @@ const getUser = async (
         .status(httpStatus.NOT_FOUND)
         .json({ message: "User not found", status: httpStatus.NOT_FOUND });
     return res.status(httpStatus.OK).json({
-      email: user.email,
-      name: user.name,
-      role: user.role,
-      id: user.id,
+      email: user.response.email,
+      name: user.response.name,
+      role: user.response.role,
+      id: user.response.id,
     });
   } catch (error) {
     return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({

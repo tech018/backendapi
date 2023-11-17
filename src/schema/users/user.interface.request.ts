@@ -1,4 +1,4 @@
-import { Role } from "@prisma/client";
+
 import { ContainerTypes, ValidatedRequestSchema } from "express-joi-validation";
 
 export interface createUserRequestSchema extends ValidatedRequestSchema {
@@ -6,12 +6,12 @@ export interface createUserRequestSchema extends ValidatedRequestSchema {
     password: string;
     email: string;
     name: string;
-    role: Role;
+    role: string;
   };
 }
 
 export interface getUserRequestSchema extends ValidatedRequestSchema {
   [ContainerTypes.Query]: {
-    userId: number;
+    userId: string;
   };
 }

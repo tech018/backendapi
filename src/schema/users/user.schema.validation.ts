@@ -8,7 +8,7 @@ const createUserSchema = Joi.object({
 });
 
 const getUserSchema = Joi.object({
-  userId: Joi.number().required(),
+  userId: Joi.string().required(),
 });
 
 export default {
