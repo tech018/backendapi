@@ -9,7 +9,7 @@ const clientSchema = Joi.object({
 });
 
 const clientUpdateSchema = Joi.object({
-  clientId: Joi.number().required(),
+  clientId: Joi.string().required(),
   name: Joi.string().required(),
   email: Joi.string().email().required(),
   address: Joi.string().required(),
@@ -20,11 +20,11 @@ const clientUpdateSchema = Joi.object({
 const clientUpdateSingleSchema = Joi.object({
   value: Joi.string().required(),
   key: Joi.string().required(),
-  clientId: Joi.number().required(),
+  clientId: Joi.string().required(),
 });
 
 const clientDeleteSchema = Joi.object({
-  clientId: Joi.number().required(),
+  clientId: Joi.string().required(),
 });
 
 export default {

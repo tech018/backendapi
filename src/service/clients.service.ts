@@ -45,7 +45,7 @@ const checkClientEmail = async (email: string): Promise<IClient | null> => {
   return null;
 };
 
-const checkClientId = async (clientId: number): Promise<IClient | null> => {
+const checkClientId = async (clientId: string): Promise<IClient | null> => {
   const query = await Client.findById(clientId);
 
   if (query) return query;
@@ -53,7 +53,7 @@ const checkClientId = async (clientId: number): Promise<IClient | null> => {
   return null;
 };
 const updateClient = async (
-  clientId: number,
+  clientId: string,
   name: string,
   email: string,
   address: string,
@@ -95,7 +95,7 @@ const updateClient = async (
 };
 
 const updateClientSingle = async (
-  clientId: number,
+  clientId: string,
   key: keyof IClient,
   value: string
 ) => {

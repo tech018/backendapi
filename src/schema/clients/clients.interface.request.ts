@@ -13,7 +13,7 @@ export interface createClientRequestSchema extends ValidatedRequestSchema {
 
 export interface updateClientRequestSchema extends ValidatedRequestSchema {
   [ContainerTypes.Body]: {
-    clientId: number;
+    clientId: string;
     name: string;
     email: string;
     address: string;
@@ -25,7 +25,7 @@ export interface updateClientRequestSchema extends ValidatedRequestSchema {
 export interface updateSingleClientRequestSchema
   extends ValidatedRequestSchema {
   [ContainerTypes.Body]: {
-    clientId: number;
+    clientId: string;
     key: keyof IClient;
     value: string;
   };
