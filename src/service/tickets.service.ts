@@ -63,13 +63,9 @@ export const getTickets = async (clientId: Types.ObjectId) => {
   }
 };
 
-export interface selectedId {
-  _id: Types.ObjectId;
-}
-
-const deleteTicket = async (ticketIds: Array<selectedId>) => {
+const deleteTicket = async (ticketIds: Array<string>) => {
   try {
-    const tickets = await Tickets.deleteMany(ticketIds);
+    const tickets = await Tickets.deleteMany({ _id: { $in: ticketIds } });
     if (tickets)
       return {
         status: httpStatus.OK,
@@ -80,10 +76,39 @@ const deleteTicket = async (ticketIds: Array<selectedId>) => {
       response: "unable to delete",
     };
   } catch (error) {
-    console.log("error delete ticket");
+    console.log("error delete ticket", error);
     return {
       status: httpStatus.INTERNAL_SERVER_ERROR,
       response: "Internal server errir",
+    };
+  }
+};
+
+const updateTicket = async (
+  ticketId: Types.ObjectId,
+  key: keyof ITickets,
+  value: string | number
+) => {
+  try {
+    const ticket = await Tickets.findOneAndUpdate(
+      { _id: ticketId },
+      { [key]: value }
+    );
+    if (ticket)
+      return {
+        status: httpStatus.OK,
+        response: `Successfully updated ${key} with a ${value}`,
+      };
+
+    return {
+      status: httpStatus.BAD_REQUEST,
+      response: `Unable to update ${key} with a ${value}`,
+    };
+  } catch (error) {
+    console.log("error update ticket", error);
+    return {
+      status: httpStatus.INTERNAL_SERVER_ERROR,
+      response: `Internal server error`,
     };
   }
 };
@@ -92,4 +117,5 @@ export default {
   createTicket,
   getTickets,
   deleteTicket,
+  updateTicket,
 };

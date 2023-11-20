@@ -24,7 +24,5 @@ export const getTicketSchema = Joi.object({
 });
 
 export const deleteTicketSchema = Joi.object({
-  ticketIds: Joi.array().items({
-    _id: Joi.string().required(),
-  }),
+  ticketIds: Joi.array().items(Joi.string()),
 });

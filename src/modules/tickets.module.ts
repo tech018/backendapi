@@ -2,6 +2,7 @@ import { ValidatedRequest } from "express-joi-validation";
 import { Response } from "express";
 import {
   createTicketRequestSchema,
+  deleteTicketRequestSchema,
   getTicketRequestSchema,
 } from "../schema/ticket/ticket.interface.request";
 import ticketsService from "../service/tickets.service";
@@ -41,7 +42,17 @@ const getTicket = async (
   return res.status(data.status).json({ data: data.response });
 };
 
+const deleteTicket = async (
+  req: ValidatedRequest<deleteTicketRequestSchema>,
+  res: Response
+) => {
+  const { ticketIds } = req.body;
+  const data = await ticketsService.deleteTicket(ticketIds);
+  if (data) return res.status(data.status).json({ data: data.response });
+};
+
 export default {
   createTicket,
   getTicket,
+  deleteTicket,
 };
