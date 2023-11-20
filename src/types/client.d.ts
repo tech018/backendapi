@@ -6,6 +6,7 @@ export interface IClient {
   address: string;
   contact_number: string;
   logo: string;
+  projectType: string;
 }
 
 export interface ClientID {
@@ -13,9 +14,9 @@ export interface ClientID {
 }
 
 export interface IUser {
-  email: string
-  name: string
-  role: string
-  id: Types.ObjectId
+  email: string;
+  name: string;
+  role: string;
+  id: Types.ObjectId;
 }
-export type status = Number | String
+export type status = Number | String;

@@ -8,6 +8,7 @@ export interface createClientRequestSchema extends ValidatedRequestSchema {
     address: string;
     contact_number: string;
     logo: string;
+    projectType: string;
   };
 }
 
