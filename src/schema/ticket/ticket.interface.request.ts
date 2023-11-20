@@ -1,5 +1,5 @@
 import { ContainerTypes, ValidatedRequestSchema } from "express-joi-validation";
-import { Attachments, Collaborator } from "../../models/ticket.model";
+import { Attachments, Collaborator, ITickets } from "../../models/ticket.model";
 import { Types } from "mongoose";
 
 export interface createTicketRequestSchema extends ValidatedRequestSchema {
@@ -23,5 +23,13 @@ export interface getTicketRequestSchema extends ValidatedRequestSchema {
 export interface deleteTicketRequestSchema extends ValidatedRequestSchema {
   [ContainerTypes.Body]: {
     ticketIds: Array<string>;
+  };
+}
+
+export interface updateTicketRequestSchema extends ValidatedRequestSchema {
+  [ContainerTypes.Body]: {
+    ticketId: Types.ObjectId;
+    key: keyof ITickets;
+    value: string | number;
   };
 }

@@ -5,6 +5,7 @@ import {
   createTicketSchema,
   getTicketSchema,
   deleteTicketSchema,
+  ticketUpdateSingleSchema,
 } from "../schema/ticket/ticket.schema.validation";
 
 const validator = createValidator();
@@ -21,5 +22,8 @@ router
 router
   .route("/delete")
   .post(validator.body(deleteTicketSchema), ticketsModule.deleteTicket);
+router
+  .route("/update")
+  .put(validator.body(ticketUpdateSingleSchema), ticketsModule.updateTicket);
 
 export default router;

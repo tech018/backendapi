@@ -4,6 +4,7 @@ import {
   createTicketRequestSchema,
   deleteTicketRequestSchema,
   getTicketRequestSchema,
+  updateTicketRequestSchema,
 } from "../schema/ticket/ticket.interface.request";
 import ticketsService from "../service/tickets.service";
 
@@ -51,8 +52,18 @@ const deleteTicket = async (
   if (data) return res.status(data.status).json({ data: data.response });
 };
 
+const updateTicket = async (
+  req: ValidatedRequest<updateTicketRequestSchema>,
+  res: Response
+) => {
+  const { ticketId, key, value } = req.body;
+  const data = await ticketsService.updateTicket(ticketId, key, value);
+  if (data) res.status(data.status).json(data.response);
+};
+
 export default {
   createTicket,
   getTicket,
   deleteTicket,
+  updateTicket,
 };
