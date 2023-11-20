@@ -1,6 +1,9 @@
 import { ValidatedRequest } from "express-joi-validation";
 import { Response } from "express";
-import { createTicketRequestSchema } from "../schema/ticket/ticket.interface.request";
+import {
+  createTicketRequestSchema,
+  getTicketRequestSchema,
+} from "../schema/ticket/ticket.interface.request";
 import ticketsService from "../service/tickets.service";
 
 const createTicket = async (
@@ -29,6 +32,16 @@ const createTicket = async (
   return res.status(data.status).json({ message: data.response });
 };
 
+const getTicket = async (
+  req: ValidatedRequest<getTicketRequestSchema>,
+  res: Response
+) => {
+  const { clientId } = req.query;
+  const data = await ticketsService.getTickets(clientId);
+  return res.status(data.status).json({ data: data.response });
+};
+
 export default {
   createTicket,
+  getTicket,
 };

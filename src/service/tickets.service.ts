@@ -1,5 +1,6 @@
 import httpStatus from "http-status";
 import { ITickets, Tickets } from "../models/ticket.model";
+import { Types } from "mongoose";
 
 const createTicket = async ({
   name,
@@ -39,8 +40,56 @@ const createTicket = async ({
   }
 };
 
-export const getTickets = async () => {};
+export const getTickets = async (clientId: Types.ObjectId) => {
+  try {
+    const tickets = await Tickets.find({ clientId });
+    if (tickets.length > 0) {
+      return {
+        status: httpStatus.OK,
+        response: tickets,
+      };
+    } else {
+      return {
+        status: httpStatus.NOT_FOUND,
+        response: "Empty tickets",
+      };
+    }
+  } catch (error) {
+    console.log("error in get tickets", error);
+    return {
+      status: httpStatus.INTERNAL_SERVER_ERROR,
+      response: `Internal server error`,
+    };
+  }
+};
+
+export interface selectedId {
+  _id: Types.ObjectId;
+}
+
+const deleteTicket = async (ticketIds: Array<selectedId>) => {
+  try {
+    const tickets = await Tickets.deleteMany(ticketIds);
+    if (tickets)
+      return {
+        status: httpStatus.OK,
+        response: `Successfully delete`,
+      };
+    return {
+      status: httpStatus.BAD_REQUEST,
+      response: "unable to delete",
+    };
+  } catch (error) {
+    console.log("error delete ticket");
+    return {
+      status: httpStatus.INTERNAL_SERVER_ERROR,
+      response: "Internal server errir",
+    };
+  }
+};
 
 export default {
   createTicket,
+  getTickets,
+  deleteTicket,
 };

@@ -20,6 +20,11 @@ export const createTicketSchema = Joi.object({
 });
 
 export const getTicketSchema = Joi.object({
-  role: Joi.string().required(),
-  email: Joi.string().required(),
+  clientId: Joi.string().required(),
+});
+
+export const deleteTicketSchema = Joi.object({
+  ticketIds: Joi.array().items({
+    _id: Joi.string().required(),
+  }),
 });
