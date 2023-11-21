@@ -10,6 +10,7 @@ import authRoutes from "../routes/auth.routes";
 import uploadRoutes from "../routes/uploader.routes";
 import clientRoutes from "../routes/client.routes";
 import ticketRoutes from "../routes/ticket.routes";
+import projectRoutes from "../routes/project.routes";
 
 const bootstrap = (application: express.Application): void => {
   application.disable("x-powered-by");
@@ -26,6 +27,7 @@ const bootstrap = (application: express.Application): void => {
   application.use("/api/upload", uploadRoutes);
   application.use("/api/client", clientRoutes);
   application.use("/api/ticket", ticketRoutes);
+  application.use("/api/project", projectRoutes);
 };
 
 export default bootstrap;
