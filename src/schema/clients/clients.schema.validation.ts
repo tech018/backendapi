@@ -6,7 +6,6 @@ const clientSchema = Joi.object({
   address: Joi.string().required(),
   contact_number: Joi.string().required(),
   logo: Joi.string().required(),
-  projectType: Joi.string().required(),
 });
 
 const clientUpdateSchema = Joi.object({

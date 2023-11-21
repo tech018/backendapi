@@ -6,7 +6,6 @@ export interface IClient {
   logo: string;
   contact_number: string;
   name: string;
-  projectType: string;
 }
 
 const clientSchema = new Schema<IClient>({
@@ -14,10 +13,6 @@ const clientSchema = new Schema<IClient>({
     type: String,
     required: true,
     unique: true,
-  },
-  projectType: {
-    type: String,
-    required: true,
   },
   name: {
     type: String,

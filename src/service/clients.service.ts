@@ -8,7 +8,6 @@ const createClient = async ({
   contact_number,
   email,
   logo,
-  projectType,
 }: IClient) => {
   try {
     const client = await checkClientEmail(email);
@@ -24,7 +23,6 @@ const createClient = async ({
       address,
       contact_number,
       logo,
-      projectType,
     });
     if (create)
       return {

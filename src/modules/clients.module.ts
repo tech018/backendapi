@@ -11,14 +11,13 @@ const createClient = async (
   req: ValidatedRequest<createClientRequestSchema>,
   res: Response
 ) => {
-  const { email, name, address, contact_number, logo, projectType } = req.body;
+  const { email, name, address, contact_number, logo } = req.body;
   const data = await clientsService.createClient({
     name,
     email,
     address,
     contact_number,
     logo,
-    projectType,
   });
   if (data) return res.status(data.status).json({ data: data.response });
 };

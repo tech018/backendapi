@@ -6,7 +6,6 @@ export interface IClient {
   address: string;
   contact_number: string;
   logo: string;
-  projectType: string;
 }
 
 export interface ClientID {
