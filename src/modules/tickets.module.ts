@@ -12,15 +12,8 @@ const createTicket = async (
   req: ValidatedRequest<createTicketRequestSchema>,
   res: Response
 ) => {
-  const {
-    name,
-    assignee,
-    reporter,
-    prioLevel,
-    descriptions,
-    attachments,
-    clientId,
-  } = req.body;
+  const { name, assignee, reporter, prioLevel, descriptions, attachments } =
+    req.body;
 
   const data = await ticketsService.createTicket({
     name,
@@ -29,7 +22,6 @@ const createTicket = async (
     prioLevel,
     descriptions,
     attachments,
-    clientId,
   });
   return res.status(data.status).json({ message: data.response });
 };

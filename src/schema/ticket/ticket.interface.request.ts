@@ -5,7 +5,6 @@ import { Types } from "mongoose";
 export interface createTicketRequestSchema extends ValidatedRequestSchema {
   [ContainerTypes.Body]: {
     assignee: Collaborator;
-    clientId: Types.ObjectId;
     name: string;
     reporter: Collaborator;
     prioLevel: number;

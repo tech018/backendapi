@@ -9,7 +9,6 @@ const createTicket = async ({
   prioLevel,
   descriptions,
   attachments,
-  clientId,
 }: ITickets) => {
   try {
     const tickets = await Tickets.create({
@@ -19,7 +18,6 @@ const createTicket = async ({
       prioLevel,
       descriptions,
       attachments,
-      clientId,
     });
     if (tickets)
       return {

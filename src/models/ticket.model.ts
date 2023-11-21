@@ -3,6 +3,7 @@ import { Schema, Types, model } from "mongoose";
 export interface Collaborator {
   email: string;
   name: string;
+  role?: string;
 }
 
 export interface Attachments {
@@ -11,7 +12,6 @@ export interface Attachments {
 }
 
 export interface ITickets {
-  clientId: Types.ObjectId;
   assignee: Collaborator;
   name: string;
   reporter: Collaborator;
@@ -21,11 +21,6 @@ export interface ITickets {
 }
 
 const ticketSchema = new Schema<ITickets>({
-  clientId: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    ref: "Client",
-  },
   assignee: {
     email: {
       type: String,
