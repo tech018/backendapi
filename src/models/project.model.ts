@@ -6,6 +6,8 @@ export interface IProject {
   name: string;
   collaborator: Array<Collaborator>;
   budget: string;
+  details: string;
+  type: string;
 }
 
 const projectSchema = new Schema<IProject>({
@@ -37,6 +39,13 @@ const projectSchema = new Schema<IProject>({
     type: Schema.Types.ObjectId,
     required: true,
     ref: "Client",
+  },
+  details: {
+    type: String,
+  },
+  type: {
+    type: String,
+    required: true,
   },
 });
 
